@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
 
-/* Models */
+/* Import Models */
 const Bag = require('../models/bag');
 
-/* READ bags. */
+/* GET all bags. */
 router.get('/', function(req, res, next) {
   Bag.find({}, '_id name owner items createdAt', function(err, bags){
     if(err) res.send(err);
     res.send(bags);
+  }).catch(e => res.status(400).send(e))
+  .finally(()=>{
+    res.status(404).send("Could Not Get All Bags");
   });
 });
 
@@ -18,23 +21,29 @@ router.post('/', function(req, res, next){
     Bag.create(req.body, function(err, newBag){
       if(err) res.send(err);
       res.send(newBag);
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Could Not Create Bag");
     });
   }
 });
 
-/* READ bag with id */
+/* GET bag with bag-id */
 router.get('/:id', function(req, res, next) {
   const id = req.params.id;
 
   if(id !== undefined){
-    Bag.find({_id: id}, '_id name owner items createdAt', function(err, bags){
+    Bag.findById(id, '_id name owner items createdAt', function(err, bags){
       if(err) res.send(err);
       res.send(bags);
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Bag Not Found");
     });
   }
 });
 
-/* UPDATE bag with id */
+/* UPDATE bag with bag-id */
 router.put('/:id', function(req, res, next) {
   const id = req.params.id;
 
@@ -42,11 +51,11 @@ router.put('/:id', function(req, res, next) {
     Bag.updateOne({ _id: id }, req.body, function(err, bag) {
         if(err) res.send(err);
         res.send(bag);
-    });
+    })
   }
 });
 
-/* DELETE bag with id */
+/* DELETE bag with bag-id */
 router.delete('/:id', function(req, res, next) {
   const id = req.params.id;
 
@@ -54,49 +63,94 @@ router.delete('/:id', function(req, res, next) {
     Bag.deleteOne({ _id:  id}, function (err) {
         if (err) res.send(err);
         res.send(`Bag(${id}) deleted`);
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Bag Not Found");
     });
   }
 });
 
-/*CREATE new item in bag with id */
+/*CREATE new item with bag-id */
 router.post('/:id/items', function(req, res, next){
   const id = req.params.id;
   const body = req.body;
 
   if(id !== undefined && req.body !== undefined){
-    Bag.findOne({_id: id}).then(bag => {
-      bag.items.push(body.name);
+    Bag.findById(id).then(bag => {
+      bag.items.push(body);
       bag.save();
       res.send(bag);
-    })
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Bag Not Found");
+    });
   }
 });
 
-/*READ items in bag with id */
+/*GET items with bag-id */
 router.get('/:id/items', function(req, res, next){
   const id = req.params.id;
 
   if(id !== undefined){
-    Bag.find({_id: id}, 'items', function(err, items){
+    Bag.findById(id, 'items', function(err, items){
       if(err) res.send(err);
       res.send(items);
-    })
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Bag Not Found");
+    });
   }
 });
-
-/*UPDATE items in bag with id => NOT ALLOWED*/
 
 /*DELETE all items in bag with id */
 router.delete('/:id/items', function(req, res, next){
   const id = req.params.id;
 
   if(id !== undefined){
-    Bag.findOne({_id: id}).then(bag => {
+    Bag.findById(id).then(bag => {
       bag.items = [];
       bag.save();
       res.send(bag);
-    })
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Item Not Found");
+    });
   }
 });
+
+/* GET item with id*/
+router.get('/:id/items/:itemid', function(req, res, next){
+  const id = req.params.id;
+  const itemid = req.params.itemid;
+
+  if(id !== undefined && itemid !== undefined){
+    Bag.findById(id).then(bag => {
+      res.send(bag.items.id(itemid));
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Item Not Found");
+    });
+  }
+})
+
+/* UPDATE item with id */
+router.put('/:id/items/:itemid', function(req, res, next){
+  const id = req.params.id;
+  const itemid = req.params.itemid;
+
+  if(id !== undefined && itemid !== undefined && req.body !== undefined){
+    Bag.findById(id).then(bag => {
+      const item = bag.items.id(itemid);
+      item.set(req.body);
+      return bag.save();
+
+    }).then((bag) => {
+      res.send(bag);
+    }).catch(e => res.status(400).send(e))
+    .finally(()=>{
+      res.status(404).send("Item Not Found");
+    });
+  }
+})
 
 module.exports = router;
