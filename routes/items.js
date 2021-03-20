@@ -5,15 +5,23 @@ const router = express.Router();
 const Item = require('../models/item');
 
 const idvalidator = require('./middleware/idvalidator');
+const itemquerybuilder = require('./middleware/itemquerybuilder')
 
-router.use('/:itemid', idvalidator({id: "itemid"})); //TODO: Fix error handler
+router.use('/:itemid', idvalidator({id: "itemid"})); //TODO: Look up error handler
+
+router.use('/', itemquerybuilder({})); //ONLY on get
 
 /* GET /items */
 router.get('/', function(req, res, next){
-    Item.find({}, "_id name price barcode nutrition", function(err, items){
-        if(err) next(err);
-        else return items;
-    }).then((items) => res.send(items));
+    Item.find(
+        req.query)
+        .select(req.meta.select)
+        .limit(req.meta.limit)
+        .sort(req.meta.sort)
+        .exec(function(err, items){
+            if(err) next(err);
+            else res.send(items);
+    });
 });
 
 /* POST /items */
@@ -21,8 +29,8 @@ router.post('/', function(req, res, next){
     if(req.body !== undefined){
         Item.create(req.body, function(err, item){
             if(err) next(err);
-            else return item;
-        }).then((item) => res.send(item));
+            else res.send(item);
+        });
     }else{
         throw new Error("Empty Body");
     }
@@ -52,7 +60,7 @@ router.put('/:itemid', function(req, res, next) {
 router.delete('/:itemid', function(req, res, next){
     Item.deleteOne({ _id: req.params["itemid"]}, function (err) {
         if (err) next(err);
-        res.send(`Item(${itemID}) deleted`);
+        res.send(`Item(${req.params["itemid"]}) deleted`);
     });
 });
 
