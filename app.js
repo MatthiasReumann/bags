@@ -5,6 +5,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var bagsRouter = require('./routes/bags');
+var itemRouter = require('./routes/items')
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/shopping', {useNewUrlParser: true, useUnifiedTopology: true});
@@ -25,5 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/bags', bagsRouter);
+app.use('/items', itemRouter)
 
 module.exports = app;

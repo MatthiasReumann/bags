@@ -9,9 +9,6 @@ router.get('/', function(req, res, next) {
   Bag.find({}, '_id name owner items createdAt', function(err, bags){
     if(err) res.send(err);
     res.send(bags);
-  }).catch(e => res.status(400).send(e))
-  .finally(()=>{
-    res.status(404).send("Could Not Get All Bags");
   });
 });
 
@@ -20,11 +17,8 @@ router.post('/', function(req, res, next){
   if(req.body !== undefined){
     Bag.create(req.body, function(err, newBag){
       if(err) res.send(err);
-      res.send(newBag);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Could Not Create Bag");
-    });
+      else return newBag;
+    }).then((bag) => res.send(bag));
   }
 });
 
@@ -36,9 +30,6 @@ router.get('/:id', function(req, res, next) {
     Bag.findById(id, '_id name owner items createdAt', function(err, bags){
       if(err) res.send(err);
       res.send(bags);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Bag Not Found");
     });
   }
 });
@@ -51,7 +42,7 @@ router.put('/:id', function(req, res, next) {
     Bag.updateOne({ _id: id }, req.body, function(err, bag) {
         if(err) res.send(err);
         res.send(bag);
-    })
+    });
   }
 });
 
@@ -63,9 +54,6 @@ router.delete('/:id', function(req, res, next) {
     Bag.deleteOne({ _id:  id}, function (err) {
         if (err) res.send(err);
         res.send(`Bag(${id}) deleted`);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Bag Not Found");
     });
   }
 });
@@ -80,9 +68,6 @@ router.post('/:id/items', function(req, res, next){
       bag.items.push(body);
       bag.save();
       res.send(bag);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Bag Not Found");
     });
   }
 });
@@ -95,9 +80,6 @@ router.get('/:id/items', function(req, res, next){
     Bag.findById(id, 'items', function(err, items){
       if(err) res.send(err);
       res.send(items);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Bag Not Found");
     });
   }
 });
@@ -110,11 +92,11 @@ router.delete('/:id/items', function(req, res, next){
     Bag.findById(id).then(bag => {
       bag.items = [];
       bag.save();
+
+      return bag;
+    }).then((bag) => {
       res.send(bag);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Item Not Found");
-    });
+    })
   }
 });
 
@@ -126,9 +108,6 @@ router.get('/:id/items/:itemid', function(req, res, next){
   if(id !== undefined && itemid !== undefined){
     Bag.findById(id).then(bag => {
       res.send(bag.items.id(itemid));
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Item Not Found");
     });
   }
 })
@@ -146,9 +125,6 @@ router.put('/:id/items/:itemid', function(req, res, next){
 
     }).then((bag) => {
       res.send(bag);
-    }).catch(e => res.status(400).send(e))
-    .finally(()=>{
-      res.status(404).send("Item Not Found");
     });
   }
 })
