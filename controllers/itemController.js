@@ -9,47 +9,50 @@ exports.item_list = function(req, res){
         .sort(req.meta.sort)
         .exec(function(err, items){
             if(err) next(err);
-            else res.send(items);
+            else {
+                res.send(items);
+            }
     });
 };
 
 // Create new item on POST.
 exports.item_post = function(req, res, next){
-    if(req.body !== undefined){
-        Item.create(req.body, function(err, item){
-            if(err) next(err);
-            else res.send(item);
-        });
-    }else{
-        throw new Error("Empty Body");
-    }
+    Item.create(req.body, function(err, item){
+        if(err) next(err);
+        else{
+            res.setHeader("Location", `/items/${item._id}`);
+            res.status(201).send(item); // 201 (Created)
+        }
+    });
 };
 
 // Display item with id on GET.
 exports.item_id_get = function(req, res, next){
-    Item.findById(req.params["id"], function(err, item){
+    Item.findById(req.params.id, function(err, item){
         if(err) next(err);
-        else return item;
-    }).then((item) => res.send(item));
+        else {
+            res.status(200).send(item);
+        }
+    });
 };
 
 // Delete item with id on DELETE.
 exports.item_id_put = function(req, res, next) {
-    if(req.body !== undefined){
-        Item.updateOne({ _id: req.params["id"] }, req.body, function(err, item) {
-            if(err) next(err);
-            else return item;
-        }).then((item) => res.send(item));
-    }else{
-        throw new Error("Invalid request");
-    }
+    Item.updateOne({ _id: req.params.id }, req.body, function(err, item) {
+        if(err) next(err);
+        else {
+            res.status(204).send();
+        }
+    });
 };
 
 // Update item with id on PUT.
 exports.item_id_delete = function(req, res, next){
     const id = req.params.id;
-    Item.deleteOne({ _id: req.params["id"]}, function (err) {
+    Item.deleteOne({ _id: id}, function (err) {
         if (err) next(err);
-        res.send(`Item(${req.params["id"]}) deleted`);
+        else{
+            res.status(204).send(); // 204 (No Content)
+        }
     });
 }
