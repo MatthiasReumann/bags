@@ -2,18 +2,15 @@ const Item = require('../models/item');
 const BadRequest = require('../utils/BadRequest');
 
 // Display list of all items on GET.
-exports.item_list = function(req, res){
+exports.item_list = function(req, res, next){
     Item.find(
         req.query)
         .select(req.meta.fields)
         .limit(req.meta.limit)
         .sort(req.meta.sort)
-        .exec(function(err, items){
-            if(err) next(err);
-            else {
-                res.send(items);
-            }
-    });
+        .exec()
+        .catch((error) => next(new BadRequest(error)))
+        .then((items) => res.send(items));
 }
 
 // Create new item on POST.
