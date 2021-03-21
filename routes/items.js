@@ -1,69 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-/* Import Models */
-const Item = require('../models/item');
+const itemController = require('../controllers/itemController');
 
-const idvalidator = require('./middleware/idvalidator');
-const itemquerybuilder = require('./middleware/itemquerybuilder')
+const idValidator = require('../middlewares/idvalidator');
+const itemQueryBuilder = require('../middlewares/itemquerybuilder');
 
-router.use('/:itemid', idvalidator({id: "itemid"})); //TODO: Look up error handler
+router.use('items/:itemid', idValidator({id: "itemid"})); //TODO: Look up error handler
 
-router.use('/', itemquerybuilder({})); //ONLY on get
+// ITEM ROUTES //
 
-/* GET /items */
-router.get('/', function(req, res, next){
-    Item.find(
-        req.query)
-        .select(req.meta.select)
-        .limit(req.meta.limit)
-        .sort(req.meta.sort)
-        .exec(function(err, items){
-            if(err) next(err);
-            else res.send(items);
-    });
-});
+// GET request to list items
+router.get('/items', itemQueryBuilder({limit:50}), itemController.item_list);
 
-/* POST /items */
-router.post('/', function(req, res, next){
-    if(req.body !== undefined){
-        Item.create(req.body, function(err, item){
-            if(err) next(err);
-            else res.send(item);
-        });
-    }else{
-        throw new Error("Empty Body");
-    }
-});
+// POST request to create item
+router.post('/items', itemController.item_post);
 
-/* GET /items/:itemid */
-router.get('/:itemid', function(req, res, next){
-    Item.findById(req.params["itemid"], function(err, item){
-        if(err) next(err);
-        else return item;
-    }).then((item) => res.send(item));
-});
+// GET request to display item with 'itemid'
+router.get('/items/:id', itemController.item_id_get);
 
-/* PUT /items/:itemid */
-router.put('/:itemid', function(req, res, next) {
-    if(req.body !== undefined){
-        Item.updateOne({ _id: req.params["itemid"] }, req.body, function(err, item) {
-            if(err) next(err);
-            else return item;
-        }).then((item) => res.send(item));
-    }else{
-        throw new Error("Invalid request");
-    }
-});
+// PUT request to update item with 'itemid'
+router.put('/items/:id', itemController.item_id_put);
 
-/* DELETE /items/:itemid */
-router.delete('/:itemid', function(req, res, next){
-    Item.deleteOne({ _id: req.params["itemid"]}, function (err) {
-        if (err) next(err);
-        res.send(`Item(${req.params["itemid"]}) deleted`);
-    });
-});
-
-
+// DELETE request to delete item with 'itemid'
+router.delete('/items/:id', itemController.item_id_delete);
 
 module.exports = router;

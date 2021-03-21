@@ -1,14 +1,11 @@
 module.exports = function(options){
-    /*
-    QUERY EXAMPLES:
-    */
     return function(req, res, next){
         if(req.method === "GET"){
             const query = {};
             const sort = {};
 
             req.meta = {
-                limit: 50,
+                limit: options.limit,
                 select: '' //select *
             };
 
@@ -18,7 +15,7 @@ module.exports = function(options){
             const itemBarcode = req.query.barcode;
             const sortParameter = req.query.sort;
             const limit = req.query.limit;
-            const select = req.query.select;
+            const fields = req.query.fields;
 
             if(req.query !== undefined){
                 if(itemName !== undefined){
@@ -49,9 +46,9 @@ module.exports = function(options){
                 if(limit !== undefined && !isNaN(limit)){
                     req.meta.limit = Number(limit);
                 }
-                
-                if(select !== undefined){
-                    req.meta.select = select;
+
+                if(fields !== undefined){
+                    req.meta.fields = fields.replace(',',' ');
                 }
             }
 

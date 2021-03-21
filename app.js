@@ -3,8 +3,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var bagsRouter = require('./routes/bags');
 var itemRouter = require('./routes/items')
 
 var mongoose = require('mongoose');
@@ -24,8 +22,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/bags', bagsRouter);
-app.use('/items', itemRouter)
+app.use('/', itemRouter);
 
 module.exports = app;
