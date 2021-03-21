@@ -14,7 +14,7 @@ exports.item_list = function(req, res, next){
 }
 
 // Create new item on POST.
-exports.item_post = async function(req, res, next){
+exports.item_post = function(req, res, next){
     Item.create(req.body)
         .catch((error) => next(new BadRequest(error))) //is it a badrequest though?
         .then((item) => {

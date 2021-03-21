@@ -1,19 +1,12 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var itemRouter = require('./routes/items')
+const db = require('./models/db');
 
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/shopping', {useNewUrlParser: true, useUnifiedTopology: true});
+const itemRouter = require('./routes/items')
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log("database connected");
-});
-
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
