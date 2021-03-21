@@ -1,4 +1,5 @@
-var Item = require('../models/item');
+const Item = require('../models/item');
+const BadRequest = require('../utils/BadRequest');
 
 // Display list of all items on GET.
 exports.item_list = function(req, res){
@@ -13,46 +14,35 @@ exports.item_list = function(req, res){
                 res.send(items);
             }
     });
-};
+}
 
 // Create new item on POST.
-exports.item_post = function(req, res, next){
-    Item.create(req.body, function(err, item){
-        if(err) next(err);
-        else{
+exports.item_post = async function(req, res, next){
+    Item.create(req.body)
+        .catch((error) => next(new BadRequest(error))) //is it a badrequest though?
+        .then((item) => {
             res.setHeader("Location", `/items/${item._id}`);
             res.status(201).send(item); // 201 (Created)
-        }
-    });
-};
+        });
+}
 
 // Display item with id on GET.
 exports.item_id_get = function(req, res, next){
-    Item.findById(req.params.id, function(err, item){
-        if(err) next(err);
-        else {
-            res.status(200).send(item);
-        }
-    });
-};
+    Item.findById(req.params.id)
+        .catch((error) => next(new BadRequest(error)))
+        .then((item) => res.status(200).send(item)); // 200 (OK)
+}
 
 // Delete item with id on DELETE.
 exports.item_id_put = function(req, res, next) {
-    Item.updateOne({ _id: req.params.id }, req.body, function(err, item) {
-        if(err) next(err);
-        else {
-            res.status(204).send();
-        }
-    });
-};
+    Item.updateOne({ _id: req.params.id }, req.body)
+        .catch((error) => next(new BadRequest(error)))
+        .then((item) => res.status(204).send()); //204 (No Content)
+}
 
 // Update item with id on PUT.
 exports.item_id_delete = function(req, res, next){
-    const id = req.params.id;
-    Item.deleteOne({ _id: id}, function (err) {
-        if (err) next(err);
-        else{
-            res.status(204).send(); // 204 (No Content)
-        }
-    });
+    Item.deleteOne({ _id: req.params.id})
+        .catch((error) => next(new BadRequest(error)))
+        .then((item) => res.status(204).send()); //204 (No Content)
 }
