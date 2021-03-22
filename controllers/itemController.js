@@ -1,5 +1,5 @@
 const Item = require('../models/item');
-const BadRequest = require('../utils/badRequest');
+const BadRequest = require('../utils/badRequestError');
 
 // Display list of all items on GET.
 exports.item_list = function(req, res, next){

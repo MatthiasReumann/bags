@@ -1,4 +1,4 @@
-const BadRequest = require("../utils/badRequest");
+const BadRequest = require("../utils/badRequestError");
 
 module.exports = function(req, res, next){
         const body = req.body;

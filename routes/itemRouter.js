@@ -5,12 +5,19 @@ const itemController = require('../controllers/itemController');
 
 const idValidator = require('../middlewares/idValidator');
 const bodyValidator = require('../middlewares/bodyValidator');
+
 const itemQueryBuilder = require('../middlewares/itemQueryBuilder');
 const itemUpdateBuilder = require('../middlewares/itemUpdateBuilder');
 
-router.use('/items/:id', idValidator({id: "id"})); //TODO: Look up error handler
+const notAllowedHandler = require('../middlewares/notAllowedHandler');
+
+router.delete('/items', notAllowedHandler);
+router.put('/items', notAllowedHandler);
+router.post('/items/:id', notAllowedHandler);
 
 // ITEM ROUTES //
+
+router.use('/items/:id', idValidator({id: "id"})); //TODO: Look up error handler
 
 // GET request to list items
 router.get('/items', itemQueryBuilder, itemController.item_list);
