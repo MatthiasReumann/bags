@@ -17,23 +17,21 @@ router.post('/items/:id', notAllowedHandler);
 
 // ITEM ROUTES //
 
-router.use('/items/:id', idValidator({id: "id"})); //TODO: Look up error handler
-
 // GET request to list items
 router.get('/items', itemQueryBuilder, itemController.item_list);
-
 // POST request to create item
 router.post('/items', bodyValidator, itemController.item_post);
 
+
+// Validate if 'id' is really an ID
+router.use('/items/:id', idValidator({id: "id"})); //TODO: Look up error handler
 // GET request to display item with 'itemid'
 router.get('/items/:id', itemController.item_id_get);
-
 // PUT request to update item with 'itemid'
 router.put('/items/:id', 
     bodyValidator, 
     itemUpdateBuilder, 
     itemController.item_id_put);
-
 // DELETE request to delete item with 'itemid'
 router.delete('/items/:id', itemController.item_id_delete);
 
