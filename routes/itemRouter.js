@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const notAllowedHandler = require('../middlewares/notAllowedHandler');
 
 const itemController = require('../controllers/itemController');
 
@@ -9,30 +9,40 @@ const bodyValidator = require('../middlewares/bodyValidator');
 const itemQueryBuilder = require('../middlewares/itemQueryBuilder');
 const itemUpdateBuilder = require('../middlewares/itemUpdateBuilder');
 
-const notAllowedHandler = require('../middlewares/notAllowedHandler');
+const router = express.Router();
 
-router.delete('/items', notAllowedHandler);
-router.put('/items', notAllowedHandler);
-router.post('/items/:id', notAllowedHandler);
+router.delete('/', notAllowedHandler);
+router.put('/', notAllowedHandler);
+router.post('/:id', notAllowedHandler);
 
-// ITEM ROUTES //
+/*
+    /items 
+*/
 
 // GET request to list items
-router.get('/items', itemQueryBuilder, itemController.item_list);
-// POST request to create item
-router.post('/items', bodyValidator, itemController.item_post);
+router.get('/', itemQueryBuilder, itemController.item_list);
 
+// POST request to create item
+router.post('/', bodyValidator, itemController.item_post);
+
+
+/*
+    /items/:id
+*/
 
 // Validate if 'id' is really an ID
-router.use('/items/:id', idValidator({id: "id"})); //TODO: Look up error handler
+router.use('/:id', idValidator({id: "id"}));
+
 // GET request to display item with 'itemid'
-router.get('/items/:id', itemController.item_id_get);
+router.get('/:id', itemController.item_id_get);
+
 // PUT request to update item with 'itemid'
-router.put('/items/:id', 
+router.put('/:id', 
     bodyValidator, 
     itemUpdateBuilder, 
     itemController.item_id_put);
+
 // DELETE request to delete item with 'itemid'
-router.delete('/items/:id', itemController.item_id_delete);
+router.delete('/:id', itemController.item_id_delete);
 
 module.exports = router;

@@ -26,6 +26,10 @@ const bagSchema = new Schema({
 })
 
 const userSchema = new Schema({
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
     oauth_id: {
         type: String
     },
@@ -33,4 +37,4 @@ const userSchema = new Schema({
     favorites: [ObjectID]
 });
 
-module.exports = userSchema;
+module.exports = mongoose.model('User', userSchema);

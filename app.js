@@ -5,7 +5,8 @@ const logger = require('morgan');
 
 const db = require('./models/db');
 
-const itemRouter = require('./routes/itemRouter')
+const itemRouter = require('./routes/itemRouter');
+const userRouter = require('./routes/userRouter');
 
 const app = express();
 
@@ -20,7 +21,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(limiter);
 
-app.use('/', itemRouter);
+app.use('/items', itemRouter);
+app.use('/users', userRouter);
+
+// error handling middleware
+// returns a json object with an attribute containg the 
+// error message. 
 app.use(function(error, req, res, next){
   if(!error.statusCode) error.statusCode = 500;
 
