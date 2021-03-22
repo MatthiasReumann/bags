@@ -4,7 +4,7 @@ const logger = require('morgan');
 
 const db = require('./models/db');
 
-const itemRouter = require('./routes/items')
+const itemRouter = require('./routes/itemRouter')
 
 const app = express();
 

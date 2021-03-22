@@ -1,10 +1,11 @@
 const Item = require('../models/item');
-const BadRequest = require('../utils/BadRequest');
+const BadRequest = require('../utils/badRequest');
 
 // Display list of all items on GET.
 exports.item_list = function(req, res, next){
     Item.find(
         req.query)
+        .where('isDeleted').equals(false)
         .select(req.meta.fields)
         .limit(req.meta.limit)
         .sort(req.meta.sort)
@@ -39,7 +40,7 @@ exports.item_id_put = function(req, res, next) {
 
 // Update item with id on PUT.
 exports.item_id_delete = function(req, res, next){
-    Item.deleteOne({ _id: req.params.id})
+    Item.updateOne({ _id: req.params.id}, {isDeleted: true})
         .catch((error) => next(new BadRequest(error)))
         .then((item) => res.status(204).send()); //204 (No Content)
 }

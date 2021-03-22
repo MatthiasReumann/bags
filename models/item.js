@@ -8,21 +8,54 @@ const shopSchema = new Schema({
 });
 
 const priceSchema = new Schema({
-    price: {type: Number, min: 0, default: 0},
+    price: {
+        type: Number, 
+        min: 0, 
+        default: 0
+    },
+    amount: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+    per: {
+        type: String,
+        enum: ['g', 'kg', 'piece'],
+        default: 'g'
+    },
     shop: shopSchema
 });
 
 const nutritionSchema = new Schema({
-    fats: {type: Number, min: 0, default: 0},
-    carbs: {type: Number, min: 0, default: 0},
-    protein: {type: Number, min: 0, default: 0},
+    fats: {
+        type: Number, 
+        min: 0, 
+        default: 0
+    },
+    carbs: {
+        type: Number, 
+        min: 0, 
+        default: 0
+    },
+    protein: {
+        type: Number, 
+        min: 0, 
+        default: 0
+    },
 });
 
 const itemSchema = new Schema({
-    name: String,
-    price: [priceSchema],
+    name: {
+        type: String,
+        required: true
+    },
+    price: priceSchema,
     barcode: String,
-    nutrition: nutritionSchema
+    nutrition: nutritionSchema,
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 });
 
 module.exports = mongoose.model("Item", itemSchema);
