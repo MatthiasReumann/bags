@@ -1,5 +1,4 @@
 const express = require('express');
-const notAllowedHandler = require('../middlewares/notAllowedHandler');
 
 const idValidator = require('../middlewares/idValidator');
 const bodyValidator = require('../middlewares/bodyValidator');
@@ -10,15 +9,16 @@ const userUpdateBuilder = require('../middlewares/userUpdateBuilder');
 
 const router = express.Router();
 
-router.get('/', notAllowedHandler);
-router.put('/', notAllowedHandler);
-router.delete('/', notAllowedHandler);
-router.post('/:id', notAllowedHandler);
-
 /*
     /users
 */
+router.get('/', userController.user_list); // NOT ALLOWED
+
+// POST request to create user
 router.post('/', bodyValidator, userController.user_post);
+
+router.put('/', userController.user_put); // NOT ALLOWED
+router.delete('/', userController.user_delete); // NOT ALLOWED
 
 
 /*
@@ -28,8 +28,37 @@ router.post('/', bodyValidator, userController.user_post);
 // Validate if 'id' is really an ID
 router.use('/:id', idValidator({id: "id"}));
 
+// GET request to display user
 router.get('/:id', userController.user_id_get);
-router.put('/:id', bodyValidator, userUpdateBuilder, userController.user_id_put);
+
+router.post('/:id', userController.user_id_post); //NOT ALLOWED
+
+// PUT request to update user
+router.put('/:id', 
+    bodyValidator, 
+    userUpdateBuilder, 
+    userController.user_id_put);
+
+// DELETE request to delete user
 router.delete('/:id', userController.user_id_delete);
+
+
+/*
+    /users/:id/bags
+*/
+
+
+/*
+    /users/:id/favorites
+*/
+
+// GET request to display favorites of user
+router.get('/:id/favorites', userController.user_id_favorites_get);
+
+// POST request to add new favorite
+router.post('/:id/favorites', userController.user_id_favorites_post);
+
+router.delete(':/id/favorites', userController.user_id_favorites_delete); // NOT ALLOWED
+router.put('/:id/favorites', userController.user_id_favorites_put); // NOT ALLOWED
 
 module.exports = router;
