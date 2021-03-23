@@ -64,8 +64,7 @@ router.get('/:id/favorites', userController.user_id_favorites_get);
 
 // POST request to add new favorite
 router.post('/:id/favorites', 
-    bodyValidator, 
-    bodyIdValidator({id:"_id"}), // check if _id in body is really an ID, TODO: even necessary? does mongoose do that automatically?
+    bodyValidator,
     userController.user_id_favorites_post);
 
 router.delete(':/id/favorites', userController.user_id_favorites_delete); // NOT ALLOWED
