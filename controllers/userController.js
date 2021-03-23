@@ -5,7 +5,7 @@ const notAllowedHandler = require('../middlewares/notAllowedHandler');
 // Create new user on POST.
 exports.user_post = function(req, res, next){
     User.create(req.body)
-        .catch((error) => next(new BadRequest(error))) //is it a badrequest though?
+        .catch((error) => next(new BadRequest(error))) // TODO: is it a badrequest though?
         .then((user) => {
             res.setHeader("Location", `/users/${user._id}`);
             res.status(201).send(user); // 201 (Created)
@@ -15,6 +15,7 @@ exports.user_post = function(req, res, next){
 exports.user_list = notAllowedHandler;
 exports.user_put = notAllowedHandler;
 exports.user_delete = notAllowedHandler;
+
 
 // Display user with id on GET.
 exports.user_id_get = function(req, res, next){
@@ -39,20 +40,41 @@ exports.user_id_delete = function(req, res, next){
 
 exports.user_id_post = notAllowedHandler;
 
+
+//Display list of bags of an user on GET.
+exports.user_id_bags_get = function(req, res, next){
+    User.find({}) // TODO: map req.query
+        .select("bags")
+        .exec()
+        .catch((error) => next(new BadRequest(error)))
+        .then((bags) => res.status(200).send(bags)); // 200 (OK)
+};
+
+//Create new bag of an user on POST.
+exports.user_id_bags_post = function(req, res, next){
+    User.updateOne({_id: req.params.id}, { $push: {bags: req.body}})
+        .catch((error) => next(new BadRequest(error)))
+        .then((bag) => res.status(204).send()); // 204 (No Content)
+}
+
+exports.user_id_bags_put = notAllowedHandler;
+exports.user_id_bags_delete = notAllowedHandler;
+
+
 // Display list of an user's favorites on GET.
 exports.user_id_favorites_get = function(req, res, next){
     User.findById(req.params.id)
         .select("favorites")
         .exec()
         .catch((error) => next(new BadRequest(error)))
-        .then((favorites) => res.status(200).send(favorites)); //200 (OK)
+        .then((favorites) => res.status(200).send(favorites)); // 200 (OK)
 }
 
 // Add new favorite to user's favorite list on POST
 exports.user_id_favorites_post = function(req, res, next){
-    User.updateOne({_id: req.params.id}, { $push: {favorites: req.body}}) //TODO: Check if item exists
+    User.updateOne({_id: req.params.id}, { $push: {favorites: req.body}}) // TODO: Check if item exists
         .catch((error) => next(new BadRequest(error)))
-        .then((favorite) => res.status(204).send()); //204 (No Content)
+        .then((favorite) => res.status(204).send()); // 204 (No Content)
 }
 
 exports.user_id_favorites_delete = notAllowedHandler;

@@ -48,6 +48,12 @@ router.delete('/:id', userController.user_id_delete);
     /users/:id/bags
 */
 
+router.get('/:id/bags', userController.user_id_bags_get);
+router.post('/:id/bags', 
+    bodyValidator,
+    userController.user_id_bags_post);
+router.put('/:id/bags', userController.user_id_bags_put); // NOT ALLOWED
+router.delete('/:id/bags', userController.user_id_bags_delete); // NOT ALLOWED
 
 /*
     /users/:id/favorites
@@ -59,7 +65,7 @@ router.get('/:id/favorites', userController.user_id_favorites_get);
 // POST request to add new favorite
 router.post('/:id/favorites', 
     bodyValidator, 
-    bodyIdValidator({id:"_id"}),
+    bodyIdValidator({id:"_id"}), // check if _id in body is really an ID, TODO: even necessary? does mongoose do that automatically?
     userController.user_id_favorites_post);
 
 router.delete(':/id/favorites', userController.user_id_favorites_delete); // NOT ALLOWED
