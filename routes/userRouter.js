@@ -1,6 +1,7 @@
 const express = require('express');
 
-const idValidator = require('../middlewares/idValidator');
+const paramsIdValidator = require('../middlewares/paramsIdValidator');
+const bodyIdValidator = require('../middlewares/bodyIdValidator');
 const bodyValidator = require('../middlewares/bodyValidator');
 
 const userController = require('../controllers/userController');
@@ -26,7 +27,7 @@ router.delete('/', userController.user_delete); // NOT ALLOWED
 */
 
 // Validate if 'id' is really an ID
-router.use('/:id', idValidator({id: "id"}));
+router.use('/:id', paramsIdValidator({id: "id"}));
 
 // GET request to display user
 router.get('/:id', userController.user_id_get);
@@ -56,7 +57,10 @@ router.delete('/:id', userController.user_id_delete);
 router.get('/:id/favorites', userController.user_id_favorites_get);
 
 // POST request to add new favorite
-router.post('/:id/favorites', userController.user_id_favorites_post);
+router.post('/:id/favorites', 
+    bodyValidator, 
+    bodyIdValidator({id:"_id"}),
+    userController.user_id_favorites_post);
 
 router.delete(':/id/favorites', userController.user_id_favorites_delete); // NOT ALLOWED
 router.put('/:id/favorites', userController.user_id_favorites_put); // NOT ALLOWED

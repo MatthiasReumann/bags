@@ -3,7 +3,7 @@ const notAllowedHandler = require('../middlewares/notAllowedHandler');
 
 const itemController = require('../controllers/itemController');
 
-const idValidator = require('../middlewares/idValidator');
+const paramsIdValidator = require('../middlewares/paramsIdValidator');
 const bodyValidator = require('../middlewares/bodyValidator');
 
 const itemQueryBuilder = require('../middlewares/itemQueryBuilder');
@@ -31,7 +31,7 @@ router.post('/', bodyValidator, itemController.item_post);
 */
 
 // Validate if 'id' is really an ID
-router.use('/:id', idValidator({id: "id"}));
+router.use('/:id', paramsIdValidator({id: "id"}));
 
 // GET request to display item with 'itemid'
 router.get('/:id', itemController.item_id_get);

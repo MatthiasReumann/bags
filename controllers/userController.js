@@ -50,9 +50,9 @@ exports.user_id_favorites_get = function(req, res, next){
 
 // Add new favorite to user's favorite list on POST
 exports.user_id_favorites_post = function(req, res, next){
-    User.updateOne({_id: req.params.id}, req.body)
+    User.updateOne({_id: req.params.id}, { $push: {favorites: req.body}}) //TODO: Check if item exists
         .catch((error) => next(new BadRequest(error)))
-        .then((favorite) => res.send(204).send()); //204 (No Content)
+        .then((favorite) => res.status(204).send()); //204 (No Content)
 }
 
 exports.user_id_favorites_delete = notAllowedHandler;
