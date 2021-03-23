@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const BadRequest = require('../utils/badRequestError');
+const BadRequest = require('../utils/errors/badRequestError');
 const notAllowedHandler = require('../middlewares/notAllowedHandler');
 
 // Create new user on POST.
