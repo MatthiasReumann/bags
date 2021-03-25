@@ -1,7 +1,8 @@
 const express = require('express');
 
+const MethodNotAllowed = require('../middlewares/notAllowedHandler');
+
 const paramsIdValidator = require('../middlewares/paramsIdValidator');
-const bodyIdValidator = require('../middlewares/bodyIdValidator');
 const bodyValidator = require('../middlewares/bodyValidator');
 
 const userController = require('../controllers/userController');
@@ -13,13 +14,13 @@ const router = express.Router();
 /*
     /users
 */
-router.get('/', userController.user_list); // NOT ALLOWED
+router.get('/', MethodNotAllowed);
 
 // POST request to create user
 router.post('/', bodyValidator, userController.user_post);
 
-router.put('/', userController.user_put); // NOT ALLOWED
-router.delete('/', userController.user_delete); // NOT ALLOWED
+router.put('/', MethodNotAllowed);
+router.delete('/', MethodNotAllowed);
 
 
 /*
@@ -32,7 +33,7 @@ router.use('/:id', paramsIdValidator({id: "id"}));
 // GET request to display user
 router.get('/:id', userController.user_id_get);
 
-router.post('/:id', userController.user_id_post); //NOT ALLOWED
+router.post('/:id', MethodNotAllowed);
 
 // PUT request to update user
 router.put('/:id', 
@@ -48,12 +49,16 @@ router.delete('/:id', userController.user_id_delete);
     /users/:id/bags
 */
 
+// GET request to display bags of user
 router.get('/:id/bags', userController.user_id_bags_get);
+
+// POST request to add new bag
 router.post('/:id/bags', 
     bodyValidator,
     userController.user_id_bags_post);
-router.put('/:id/bags', userController.user_id_bags_put); // NOT ALLOWED
-router.delete('/:id/bags', userController.user_id_bags_delete); // NOT ALLOWED
+
+router.put('/:id/bags', MethodNotAllowed);
+router.delete('/:id/bags', MethodNotAllowed);
 
 /*
     /users/:id/favorites
@@ -67,7 +72,7 @@ router.post('/:id/favorites',
     bodyValidator,
     userController.user_id_favorites_post);
 
-router.delete(':/id/favorites', userController.user_id_favorites_delete); // NOT ALLOWED
-router.put('/:id/favorites', userController.user_id_favorites_put); // NOT ALLOWED
+router.delete(':/id/favorites', MethodNotAllowed);
+router.put('/:id/favorites', MethodNotAllowed);
 
 module.exports = router;

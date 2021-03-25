@@ -1,9 +1,14 @@
 module.exports = function(options){
+    // build(base) returns meta object in the form of
+    // {
+    //      limit: <Number>
+    //      fields: <mongoose query string in the form of 'a b c'>
+    //      sort: <object containing one key:value pair in the form of 'field':(-1/1)>
+    // }
     return {
         build: function(base){
             const meta = {
                 limit: options.limit,
-                select: '' //select *
             };
 
             const sortParameter = base.sort;

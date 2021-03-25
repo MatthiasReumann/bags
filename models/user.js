@@ -6,7 +6,10 @@ const ObjectID = mongoose.Types.ObjectId;
 // here a item is just an id referencing an item and the amount 
 // which is in a bag
 const itemSchema = new Schema({
-    id: ObjectID, // real item id
+    id: {
+        type: ObjectID,
+        ref: 'Item'
+    },
     amount: {
         type: Number,
         min: 0,

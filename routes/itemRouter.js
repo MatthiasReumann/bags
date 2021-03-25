@@ -1,5 +1,6 @@
 const express = require('express');
-const notAllowedHandler = require('../middlewares/notAllowedHandler');
+
+const MethodNotAllowed = require('../middlewares/notAllowedHandler');
 
 const itemController = require('../controllers/itemController');
 
@@ -11,10 +12,6 @@ const itemUpdateBuilder = require('../middlewares/itemUpdateBuilder');
 
 const router = express.Router();
 
-router.delete('/', notAllowedHandler);
-router.put('/', notAllowedHandler);
-router.post('/:id', notAllowedHandler);
-
 /*
     /items 
 */
@@ -24,6 +21,9 @@ router.get('/', itemQueryBuilder, itemController.item_list);
 
 // POST request to create item
 router.post('/', bodyValidator, itemController.item_post);
+
+router.put('/', MethodNotAllowed);
+router.delete('/', MethodNotAllowed);
 
 
 /*
@@ -35,6 +35,8 @@ router.use('/:id', paramsIdValidator({id: "id"}));
 
 // GET request to display item with 'itemid'
 router.get('/:id', itemController.item_id_get);
+
+router.post('/:id', MethodNotAllowed);
 
 // PUT request to update item with 'itemid'
 router.put('/:id', 
