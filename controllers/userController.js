@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Bag = require('../models/bag');
 const BadRequest = require('../utils/errors/badRequestError');
 
 // Create new user on POST.
@@ -42,14 +43,11 @@ exports.user_id_delete = function(req, res, next){
 
 // Display list of bags of an user on GET.
 exports.user_id_bags_get = function(req, res, next){
-    res.send("NOT IMPLEMENTED");
-};
-
-// Create new bag of an user on POST.
-exports.user_id_bags_post = function(req, res, next){
-    res.send("NOT IMPLEMENTED");
+    Bag.find({owner: req.params.id}).exec((error, bags) => {
+        if(error) return next(new BadRequest(error));
+        else return res.status(200).send(bags); // 200 (OK)
+    });
 }
-
 
 // Display list of an user's favorites on GET.
 exports.user_id_favorites_get = function(req, res, next){

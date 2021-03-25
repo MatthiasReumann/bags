@@ -52,11 +52,8 @@ router.delete('/:id', userController.user_id_delete);
 // GET request to display bags of user
 router.get('/:id/bags', userController.user_id_bags_get);
 
-// POST request to add new bag
-router.post('/:id/bags', 
-    bodyValidator,
-    userController.user_id_bags_post);
 
+router.post('/:id/bags', MethodNotAllowed);
 router.put('/:id/bags', MethodNotAllowed);
 router.delete('/:id/bags', MethodNotAllowed);
 

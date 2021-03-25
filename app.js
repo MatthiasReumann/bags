@@ -7,6 +7,7 @@ const db = require('./models/db');
 
 const itemRouter = require('./routes/itemRouter');
 const userRouter = require('./routes/userRouter');
+const bagRouter = require('./routes/bagRouter');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(limiter);
 
 app.use('/items', itemRouter);
 app.use('/users', userRouter);
+app.use('/bags', bagRouter);
 
 // error handling middleware
 // returns a json object with an attribute containg the 
