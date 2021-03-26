@@ -13,6 +13,8 @@ const router = express.Router();
     /bags
 */
 router.get('/', MethodNotAllowed);
+
+// POST request to add new bag
 router.post('/', bodyValidator, bagController.bag_post);
 router.put('/',MethodNotAllowed);
 router.delete('/',MethodNotAllowed);
@@ -22,9 +24,12 @@ router.delete('/',MethodNotAllowed);
 */
 router.use('/:id', paramsIdValidator({id:"id"}));
 
+// GET request to display bag with id
 router.get('/:id', bagController.bag_id_get);
 router.post('/:id', MethodNotAllowed);
 router.put('/:id', MethodNotAllowed);
+
+// DELETE request to delete bag with id
 router.delete('/:id',bagController.bag_id_delete);
 
 /*
@@ -32,16 +37,25 @@ router.delete('/:id',bagController.bag_id_delete);
 */
 
 router.get('/:id/items', MethodNotAllowed);
-router.post('/:id/items', bagController.bag_id_items_post);
+
+//POST request to add new item to bag
+router.post('/:id/items', 
+    bodyValidator, 
+    bagController.bag_id_items_post);
 router.put('/:id/items', MethodNotAllowed);
 router.delete('/:id/items', MethodNotAllowed);
 
 /*
     /bags/:id/items/:iid
 */
+
 router.get('/:id/items/:iid', MethodNotAllowed);
 router.post('/:id/items/:iid', MethodNotAllowed);
 router.put('/:id/items/:iid', MethodNotAllowed);
-router.delete('/:id/items/:iid', paramsIdValidator({id:"iid"}), bagController.bag_id_items_id_delete);
+
+// DELETE request to delete item with id from bag
+router.delete('/:id/items/:iid', 
+    paramsIdValidator({id:"iid"}), 
+    bagController.bag_id_items_id_delete);
 
 module.exports = router;

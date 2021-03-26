@@ -12,7 +12,8 @@ const userSchema = new Schema({
         default: false
     },
     oauth_id: {
-        type: String
+        type: String,
+        required: true,
     },
     favorites: [ObjectID]
 });
