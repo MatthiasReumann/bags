@@ -2,7 +2,7 @@ const Bag = require('../models/bag');
 const BadRequest = require('../utils/errors/badRequestError');
 
 module.exports.bag_post = function(req, res, next){
-    Bag.create(req.body, (error, bag) => { // TODO: check if user exists, and neglect items array
+    Bag.create(req.body, (error, bag) => {
         if(error) return next(new BadRequest(error)); // TODO: is it a badrequest though?
         else {
             res.setHeader("Location", `/bags/${bag._id}`);

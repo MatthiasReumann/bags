@@ -61,7 +61,7 @@ exports.user_id_favorites_get = function(req, res, next){
 
 // Add new favorite to user's favorite list on POST
 exports.user_id_favorites_post = function(req, res, next){
-    User.updateOne({_id: req.params.id}, // TODO: Check if item exists: mongoose 'ref' keyword
+    User.updateOne({_id: req.params.id},
         { $push: {favorites: req.body}},
         (error, favorite) => {
             if(error) return next(new BadRequest(error));
